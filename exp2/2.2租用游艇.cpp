@@ -18,7 +18,7 @@ int main() {
     ifs >> n;
     vector<vector<int> > cost(n + 1, vector<int>(n + 1, inf));
     for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= n - i - 1; j++) {
+        for (int j = i + 1; j <= n; j++) {
             int t;
             ifs >> t;
             cost[i][j] = t;
@@ -28,9 +28,7 @@ int main() {
     ifs.close();
 
     for (int k = 1; k <= n; k++) {
-        for (int i = 1; i < n; i++) {
-            if (i >= k)
-                continue;
+        for (int i = 1; i < k; i++) {
             for (int j = i + 1; j <= n; j++) {
                 if (cost[k][i] != inf && cost[k][j] != inf && cost[i][k] + cost[k][j] < cost[i][j])
                     cost[i][j] = cost[i][k] + cost[k][j];
