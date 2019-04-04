@@ -2,7 +2,7 @@
 // Created by syh on 19-4-3.
 //
 
-// 本题类似于 LeetCode
+// 本题类似于 LeetCode 322. Coin Change
 
 #include <bits/stdc++.h>
 #include "../lib/util.h"
