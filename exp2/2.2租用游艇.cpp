@@ -8,6 +8,26 @@
 const double inf = 0x3f3f3f3f;
 using namespace std;
 
+/**
+ * Floyd 求最短路
+ *
+ * 动态规划思想，适用于有向图，仅能从上游移动到下游
+ * @param cost 顶点间距离
+ * @param n 顶点数量
+ */
+template<class T>
+void shortestPath(vector<vector<T>> &cost, int n) {
+    for (int k = 1; k <= n; k++) {
+        for (int i = 1; i < k; i++) { // 只从上游到下游，i不必大于等于k
+            for (int j = i + 1; j <= n; j++) { // j大于i即可
+                if (cost[i][k] != inf && cost[k][j] != inf && cost[i][k] + cost[k][j] < cost[i][j]) {
+                    cost[i][j] = cost[i][k] + cost[k][j];
+                }
+            }
+        }
+    }
+}
+
 int main() {
     ifstream ifs = openIfs(
             "/run/media/syh/0D11080D0D11080D/workspace/NEU-SE-Design-and-Analysis-of-Algorithms/exp2/input2.2.txt");
@@ -27,17 +47,9 @@ int main() {
     }
 
     /**
-     * 动态规划
-     * Floyd 算法的实现，有向图，仅能从上游移动到下游
+     * 求最短路并输出到文件
      */
-    for (int k = 1; k <= n; k++) {
-        for (int i = 1; i < k; i++) { // 只从上游到下游，i不必大于等于k
-            for (int j = i + 1; j <= n; j++) { // j大于i即可
-                if (cost[i][k] != inf && cost[k][j] != inf && cost[i][k] + cost[k][j] < cost[i][j])
-                    cost[i][j] = cost[i][k] + cost[k][j];
-            }
-        }
-    }
+    shortestPath(cost, n);
     ofs << cost[1][n];
 
     /**

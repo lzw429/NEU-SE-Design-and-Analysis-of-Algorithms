@@ -17,7 +17,8 @@ using namespace std;
  * @param nums2 已排序数组2
  * @return 两数组的中位数
  */
-double findMedianSortedArrays1(vector<double> &nums1, vector<double> &nums2) {
+template<class T>
+T findMedianSortedArrays1(vector<T> &nums1, vector<T> &nums2){
     int m = nums1.size();
     int n = nums2.size();
 
@@ -46,7 +47,8 @@ double findMedianSortedArrays1(vector<double> &nums1, vector<double> &nums2) {
  * @param nums2 已排序数组2
  * @return 两数组的中位数
  */
-double findMedianSortedArrays2(vector<double> &nums1, vector<double> &nums2) {
+template<class T>
+T findMedianSortedArrays2(vector<T> &nums1, vector<T> &nums2) {
     if (nums1.empty() && nums2.empty()) return -1;
     int n1 = nums1.size(), n2 = nums2.size();
     if (n2 < n1) return findMedianSortedArrays2(nums2, nums1);
@@ -108,6 +110,10 @@ int main() {
         y.push_back(t);
     }
 
+    if (x.size() != y.size()) {
+        cout << "[Info] The size of two arrays is not the same." << endl;
+        return 0;
+    }
     // 输入保证是已排序的
     sort(x.begin(), x.end());
     sort(y.begin(), y.end());

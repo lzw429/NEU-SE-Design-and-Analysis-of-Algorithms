@@ -54,12 +54,18 @@ int main() {
     int n, amount;
     vector<int> coins;
     ifs >> n;
+    if (!n) {
+        cout << "[Info] The number of coins is 0" << endl;
+    }
     for (int i = 0; i < n; i++) {
         int t;
         ifs >> t;
         coins.push_back(t);
     }
     ifs >> amount;
+    if (!amount) {
+        cout << "[Info] The target amount is 0" << endl;
+    }
 
     int res = coinChange(coins, amount);
     cout << "The result is: " << res << endl;
