@@ -30,4 +30,14 @@ inline void closeFileStream(ifstream &ifs, ofstream &ofs) {
     ofs.close();
 }
 
+template<class T>
+void print(const vector<T> &vec) {
+    if (vec.empty())
+        cout << "empty";
+    else
+        for (int i = 0; i < vec.size(); i++)
+            cout << vec[i] << " ";
+    cout << endl;
+}
+
 #endif //DESIGN_AND_ANALYSIS_OF_ALGORITHMS_UTIL_H

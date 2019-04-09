@@ -5,50 +5,40 @@
 #include <bits/stdc++.h>
 #include "../lib/util.h"
 
-int maxVal = -1;
-vector<int> sol;
+double maxVal = -1; // 最大价值
+vector<int> sol; // 解向量
 
-
-template<class T>
-void print(const vector<T> &vec) {
-    if (vec.empty())
-        cout << "empty";
-    else
-        for (int i = 0; i < vec.size(); i++)
-            cout << vec[i] << " ";
-    cout << endl;
-}
 
 /**
  * 回溯搜索01背包的最优解
  *
- * @tparam T
- * @param start
- * @param remain
- * @param w
- * @param v
- * @param cur
- * @param n
+ * @tparam T 模板类型
+ * @param start 搜索开始位置
+ * @param remain 背包剩余容量
+ * @param w 物品重量
+ * @param v 物品价值
+ * @param state 当前背包状态，state[i] = 1表示装入物品 i，state[i] = 0 表示未装入物品 i
+ * @param n 物品个数
  */
 template<class T>
-void dfs(int start, int remain, const vector<T> &w, const vector<T> &v, vector<int> cur, int n, int val) {
-    print(cur);
+void dfs(int start, T remain, const vector<T> &w, const vector<T> &v, vector<int> state, int n, T val) {
+    print(state);
     cout << "value: " << val << endl;
     cout << "n: " << n << endl;
     if (start == n) {
         if (val > maxVal) {
             maxVal = val;
-            sol.assign(cur.begin(), cur.end());
+            sol.assign(state.begin(), state.end());
         }
         return;
     }
     for (int i = start; i < n; i++) {
-        cur.push_back(1);
-        int newRemain = remain - w[i];
+        state.push_back(1);
+        T newRemain = remain - w[i];
         if (newRemain >= 0)
-            dfs(i + 1, newRemain, w, v, cur, n, val + v[i]);
-        cur.pop_back();
-        cur.push_back(0);
+            dfs(i + 1, newRemain, w, v, state, n, val + v[i]);
+        state.pop_back();
+        state.push_back(0);
     }
 }
 
@@ -60,7 +50,7 @@ int main() {
             "/run/media/syh/0D11080D0D11080D/workspace/NEU-SE-Design-and-Analysis-of-Algorithms/exp3/output3.2.txt");
 
     int n; // # item
-    int c; // package capacity
+    double c; // package capacity
     vector<double> w; // item weight
     vector<double> v; // item value
 
@@ -77,8 +67,8 @@ int main() {
         v.push_back(t);
     }
 
-    vector<int> cur;
-    dfs(0, c, w, v, cur, n, 0);
+    vector<int> state; // 当前背包状态
+    dfs(0, c, w, v, state, n, 0.0);
 
     for (int i = 0; i < sol.size(); i++) {
         ofs << sol[i] << " ";
