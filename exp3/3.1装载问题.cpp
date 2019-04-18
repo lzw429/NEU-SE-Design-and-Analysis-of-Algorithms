@@ -1,36 +1,62 @@
 //
-// Created by syh on 19-4-9.
+// Created by 舒意恒 on 19-4-9.
 //
+
+// 该装载问题要求尽可能将第一艘船装满
+// 实际上可直接使用01背包求解，每个物品的价值等同于重量
 
 #include <bits/stdc++.h>
 #include "../lib/util.h"
 
-using namespace std;
-
-double maxVal = -1;
+double maxVal = -1; // 最大价值
+vector<int> sol; // 解向量
 
 template<class T>
-void
-dfs(int start, vector<int> state, vector<vector<int>> &res, const vector<T> &w, T remain1, T remain2, int n, T val) {
-    print(state);
-    cout << "value: " << val << endl;
-    if (start == n) {
+class Item { // 物品
+public:
+    T weight; // 物品重量
+
+    Item() : weight(0) {}
+
+    bool operator<(const Item &item) {
+        this->weight > item.weight;
+    }
+};
+
+/**
+ * 回溯搜索01背包的最优解
+ *
+ * @tparam T 模板类型
+ * @param i 搜索开始位置
+ * @param remain 背包剩余容量
+ * @param items 候选物品
+ * @param state 当前背包状态，state[i] = 1表示装入物品 i，state[i] = 0 表示未装入物品 i
+ * @param n 物品个数
+ */
+template<class T>
+void dfs(int i, T remain, const vector<Item<T>> &items, vector<int> state, int n, T val) {
+    cout << "Position " << i << ", current value: " << val << ", remaining capacity: " << remain << endl;
+    if (i == n) {
         if (val > maxVal) {
             maxVal = val;
-            res.push_back(state);
+            sol.assign(state.begin(), state.end()); // 深拷贝
         }
         return;
     }
-    for (int i = start; i < n; i++) {
+    T newRemain = remain - items[i].weight; // 背包剩余重量
+    if (newRemain >= 0) { // 背包仍有剩余空间，可装载该物品
         state.push_back(1);
-        if (remain1 - w[i] > 0)
-            dfs(start + 1, state, res, w, remain1 - w[i], remain2, n, val + w[i]);
-        if (remain2 - w[i] > 0)
-            dfs(start + 1, state, res, w, remain1, remain2 - w[i], n, val + w[i]);
-        state.pop_back();
+        dfs(i + 1, newRemain, items, state, n, val + items[i].weight);
+    }
+    if (val + remain > maxVal) {
+        // 当前装载量加剩余装载量可能超过当前获得的最大载重量
+        if(newRemain >= 0)
+            state.pop_back();
         state.push_back(0);
+        dfs(i + 1, remain, items, state, n, val);
     }
 }
+
 
 int main() {
     ifstream ifs = openIfs(
@@ -38,29 +64,28 @@ int main() {
     ofstream ofs(
             "/run/media/syh/0D11080D0D11080D/workspace/NEU-SE-Design-and-Analysis-of-Algorithms/exp3/output3.1.txt");
 
-    int n;
-    double c1, c2;
-    vector<double> w;
-    ifs >> n >> c1 >> c2;
+    int n; // item 数量
+    double c; // 背包容量
+
+    // 数据输入
+    ifs >> n;
+    ifs >> c;
+
+    vector<Item<double>> items(n);
+
+    double t;
     for (int i = 0; i < n; i++) {
-        double t;
         ifs >> t;
-        w.push_back(t);
+        items[i].weight = t;
     }
 
-    vector<int> state;
-    vector<vector<int>> res;
-    dfs(0, state, res, w, c1, c2, n, 0.0);
+    vector<int> state; // 当前背包状态
+    dfs(0, c, items, state, n, 0.0);
 
-    for (int i = 0; i < res.size(); i++) {
-        for (int j = 0; j < res[i].size(); j++) {
-            cout << res[i][j] << " ";
-        }
-        cout << "\n";
+    for (int i = 0; i < sol.size(); i++) {
+        ofs << sol[i] << " ";
     }
-
-    ofs << maxVal;
-    cout << "max count: " << maxVal;
+    cout << "\nmax value is " << maxVal << "\n";
     closeFileStream(ifs, ofs);
     return 0;
 }
